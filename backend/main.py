@@ -1,7 +1,6 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+from fastapi.responses import FileResponse
 
 from backend.recomendador import recomendar_destinos
 from backend.auth import router as auth_router
@@ -13,10 +12,10 @@ import os
 
 # 👉 Rutas
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "..", "travel_ai.db")
+ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, ".."))
 
-# 👉 Templates
-templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
+DB_PATH = os.path.join(ROOT_DIR, "travel_ai.db")
+FRONTEND_PATH = os.path.join(ROOT_DIR, "frontend", "index.html")
 
 app = FastAPI(title="Travel AI API")
 
@@ -32,10 +31,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 👉 FRONTEND PRINCIPAL
-@app.get("/", response_class=HTMLResponse)
-def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+# ✅ FRONTEND DIRECTO (SIN JINJA)
+@app.get("/")
+def home():
+    return FileResponse(FRONTEND_PATH)
 
 
 # 🔥 PLAN
