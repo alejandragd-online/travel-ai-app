@@ -67,14 +67,12 @@ button:hover {
 
 <h1>🌍 Travel AI</h1>
 
-<!-- 👤 PANEL USUARIO -->
 <div id="panel_usuario" class="panel">
     <b>👤 Usuario:</b> <span id="user_email">-</span><br>
     <b>💼 Plan:</b> <span id="user_plan">-</span><br>
     <b>📊 Consultas:</b> <span id="user_consultas">-</span>
 </div>
 
-<!-- REGISTRO -->
 <h3>Registro</h3>
 <input type="email" id="reg_email" placeholder="Email">
 <input type="password" id="reg_password" placeholder="Contraseña">
@@ -83,7 +81,6 @@ button:hover {
 
 <hr>
 
-<!-- LOGIN -->
 <h3>Login</h3>
 <input type="email" id="login_email" placeholder="Email">
 <input type="password" id="login_password" placeholder="Contraseña">
@@ -92,13 +89,11 @@ button:hover {
 
 <button onclick="logout()">Cerrar sesión</button>
 
-<!-- 💳 BOTÓN PAGO -->
 <button onclick="comprarPro()">💳 Comprar PRO (9.99€)</button>
 <p id="pago_msg"></p>
 
 <hr>
 
-<!-- BUSCADOR -->
 <h3>Buscar viaje</h3>
 
 <input type="number" id="presupuesto" placeholder="Presupuesto (€)">
@@ -123,8 +118,9 @@ button:hover {
 
 <script>
 
-let usuario_logueado = null;
+const API_URL = "https://travel-ai-app-1.onrender.com";
 
+let usuario_logueado = null;
 
 // 🔁 RECUPERAR SESIÓN
 window.onload = function() {
@@ -137,14 +133,13 @@ window.onload = function() {
     }
 };
 
-
-// 👤 CARGAR PERFIL
+// 👤 PERFIL
 async function cargarPerfil() {
 
     if (!usuario_logueado) return;
 
     try {
-        let res = await fetch(`http://127.0.0.1:8000/perfil?email=${usuario_logueado}`);
+        let res = await fetch(`${API_URL}/perfil?email=${usuario_logueado}`);
         let data = await res.json();
 
         document.getElementById("user_email").innerHTML = data.email;
@@ -155,7 +150,6 @@ async function cargarPerfil() {
         console.log("Error cargando perfil");
     }
 }
-
 
 // 🔐 REGISTRO
 async function registro() {
@@ -172,7 +166,7 @@ async function registro() {
     }
 
     try {
-        let res = await fetch(`http://127.0.0.1:8000/registro?email=${email}&password=${password}`, {
+        let res = await fetch(`${API_URL}/registro?email=${email}&password=${password}`, {
             method: "POST"
         });
 
@@ -193,7 +187,6 @@ async function registro() {
     }
 }
 
-
 // 🔐 LOGIN
 async function login() {
 
@@ -204,7 +197,7 @@ async function login() {
     msg.innerHTML = "";
 
     try {
-        let res = await fetch(`http://127.0.0.1:8000/login?email=${email}&password=${password}`, {
+        let res = await fetch(`${API_URL}/login?email=${email}&password=${password}`, {
             method: "POST"
         });
 
@@ -227,7 +220,6 @@ async function login() {
     }
 }
 
-
 // 🔓 LOGOUT
 function logout() {
     localStorage.removeItem("usuario");
@@ -239,7 +231,6 @@ function logout() {
     document.getElementById("user_plan").innerHTML = "-";
     document.getElementById("user_consultas").innerHTML = "-";
 }
-
 
 // 💳 PAGO
 async function comprarPro() {
@@ -257,7 +248,7 @@ async function comprarPro() {
     setTimeout(async () => {
 
         try {
-            await fetch(`http://127.0.0.1:8000/upgrade?email=${usuario_logueado}`, {
+            await fetch(`${API_URL}/upgrade?email=${usuario_logueado}`, {
                 method: "POST"
             });
 
@@ -271,7 +262,6 @@ async function comprarPro() {
 
     }, 2000);
 }
-
 
 // 🔍 BUSCAR
 async function buscar() {
@@ -293,7 +283,7 @@ async function buscar() {
     }
 
     try {
-        let res = await fetch(`http://127.0.0.1:8000/recomendar?presupuesto=${presupuesto}&tipo=${tipo}&email=${usuario_logueado}`);
+        let res = await fetch(`${API_URL}/recomendar?presupuesto=${presupuesto}&tipo=${tipo}&email=${usuario_logueado}`);
         let data = await res.json();
 
         if (data.error) {
